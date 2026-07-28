@@ -4,7 +4,7 @@ Eventiq is a full-stack event booking platform built using the MERN stack. It al
 
 ## 🚀 Live Demo
 
-https://eventiq-six.vercel.app
+https://eventiq-six.vercel.app/ 
 
 
 ## ✨ Features
@@ -49,7 +49,7 @@ https://eventiq-six.vercel.app
 - Express.js
 - REST APIs
 - JWT Authentication
-- Nodemailer
+- Brevo HTTP API
 
 
 ## Database
@@ -137,7 +137,7 @@ Create a `.env` file inside the server folder:
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 EMAIL_USER=your_email
-EMAIL_PASSWORD=your_email_password
+BREVO_API_KEY=your_API_KEY
 ```
 
 Run backend:
@@ -204,12 +204,21 @@ MongoDB Atlas
 
 # 📸 Screenshots
 
-(Add application screenshots here)
+## Home Page
 
-- Home Page
-- Login Page
-- User Dashboard
-- Admin Dashboard
+![Home Page](screenshots/home.png)
+
+## Login Page
+
+![Login Page](screenshots/login.png)
+
+## Event Details
+
+![Event Details](screenshots/event-details.png)
+
+## Admin Dashboard
+
+![Admin Dashboard](screenshots/admin-dashboard.png)
 
 
 # 👨‍💻 Developer
