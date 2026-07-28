@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+
+# Environment files
+.env
+**/.env
+
+# Build folders
+dist
+build
+
+# Logs
+*.log
+npm-debug.log*
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode
+
+# Vite
+client/dist
+
+# Misc
+coverage
