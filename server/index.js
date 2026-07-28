@@ -17,7 +17,8 @@ const helmet = require("helmet");
 
 app.use(helmet());
 app.use(cors({
-  origin: "*"
+  origin: "https://eventiq-hjizi9kat-gowtham-rajana.vercel.app",
+  credentials: true
 }));
 app.use(express.json());
 
