@@ -1,29 +1,37 @@
-const { BrevoClient } = require('@getbrevo/brevo');
+const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-// Initialize the Brevo HTTP client (communicates via Port 443, bypassing Render's SMTP block)
-const brevo = new BrevoClient({
-    apiKey: process.env.BREVO_PASS
+// Create a secure SMTP transporter using your Brevo SMTP credentials
+const transporter = nodemailer.createTransport({
+    host: 'smtp-relay.brevo.com',
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+        user: process.env.BREVO_USER,
+        pass: process.env.BREVO_PASS // Note: For Nodemailer, this uses your xsmtpsib-... SMTP password
+    }
 });
 
 const sendBookingEmail = async (userEmail, userName, eventTitle) => {
     try {
-        await brevo.transactionalEmails.sendTransacEmail({
+        const mailOptions = {
+            // MUST be your verified email address in Brevo
+            from: `"Eventiq" <${process.env.EMAIL_USER}>`, 
+            to: userEmail,
             subject: `Booking Confirmed: ${eventTitle}`,
-            htmlContent: `
+            html: `
                 <h2>Hi ${userName}!</h2>
                 <p>Your booking for the event <strong>${eventTitle}</strong> is successfully confirmed.</p>
                 <p>Thank you for choosing Eventiq.</p>
-            `,
-            sender: { name: "Eventiq", email: process.env.EMAIL_USER },
-            to: [{ email: userEmail }]
-        });
-        
-        console.log('Email sent successfully via Brevo API to', userEmail);
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+        console.log('Booking email sent successfully via SMTP to', userEmail);
     } catch (error) {
-        console.error('Error sending email via Brevo API:', error);
+        console.error('Error sending booking email via SMTP:', error);
     }
 };
 
@@ -34,9 +42,12 @@ const sendOTPEmail = async (userEmail, otp, type) => {
             ? 'Please use the following OTP to verify your new Eventiq account.'
             : 'Please use the following OTP to verify and confirm your event booking.';
 
-        await brevo.transactionalEmails.sendTransacEmail({
+        const mailOptions = {
+            // MUST be your verified email address in Brevo
+            from: `"Eventiq Support" <${process.env.EMAIL_USER}>`, 
+            to: userEmail,
             subject: title,
-            htmlContent: `
+            html: `
                 <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
                     <h2 style="color: #111;">${title}</h2>
                     <p style="color: #555; font-size: 16px;">${msg}</p>
@@ -45,14 +56,13 @@ const sendOTPEmail = async (userEmail, otp, type) => {
                     </div>
                     <p style="color: #999; font-size: 12px;">This code expires in 5 minutes. If you didn't request this, please ignore this email.</p>
                 </div>
-            `,
-            sender: { name: "Eventiq", email: process.env.EMAIL_USER },
-            to: [{ email: userEmail }]
-        });
+            `
+        };
 
-        console.log(`OTP sent via Brevo API to ${userEmail} for ${type}`);
+        await transporter.sendMail(mailOptions);
+        console.log(`OTP sent via SMTP to ${userEmail} for ${type}`);
     } catch (error) {
-        console.error('Error sending OTP email via Brevo API:', error);
+        console.error('Error sending OTP email via SMTP:', error);
     }
 };
 
