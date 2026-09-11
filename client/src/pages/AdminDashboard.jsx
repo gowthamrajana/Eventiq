@@ -20,6 +20,7 @@ const AdminDashboard = () => {
     const [events, setEvents] = useState([]);
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [aiLoading, setAiLoading] = useState(false);
 
     const [showEventForm, setShowEventForm] = useState(false);
 
@@ -81,7 +82,36 @@ const AdminDashboard = () => {
     };
 
 
-
+    const handleGenerateDescription = async () => {
+        try {
+            setAiLoading(true);
+    
+            const response = await api.post('/ai/generate-description', {
+                title: formData.title,
+                category: formData.category,
+                date: formData.date,
+                location: formData.location,
+                ticketPrice: formData.ticketPrice
+            });
+    
+            setFormData({
+                ...formData,
+                description: response.data.description
+            });
+    
+        } catch (error) {
+            console.error("AI description error:", error);
+    
+            alert(
+                error.response?.data?.message ||
+                "Failed to generate description"
+            );
+    
+        } finally {
+            setAiLoading(false);
+        }
+    };
+    
 
 
     const handleCreateEvent = async (e) => {
@@ -746,7 +776,34 @@ const AdminDashboard = () => {
             })}
         />
 
+<div className="flex justify-between items-center mb-2">
 
+        <label className="font-bold text-gray-700">
+            Event Description
+        </label>
+
+        <button
+            type="button"
+            onClick={handleGenerateDescription}
+            disabled={aiLoading}
+            className="
+                bg-black
+                text-white
+                px-4
+                py-2
+                rounded-xl
+                text-sm
+                font-bold
+                hover:bg-gray-800
+                transition
+                disabled:opacity-50
+                disabled:cursor-not-allowed
+            "
+        >
+            {aiLoading ? "Generating..." : "✨ Generate with AI"}
+        </button>
+
+    </div>
 
         <textarea
             required

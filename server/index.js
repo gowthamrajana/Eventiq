@@ -9,6 +9,7 @@ dotenv.config();
 const authRoutes = require('./routes/auth');
 const eventRoutes = require('./routes/events');
 const bookingRoutes = require('./routes/bookings');
+const aiRoutes = require("./routes/aiRoutes");
 
 const app = express();
 
@@ -17,7 +18,10 @@ const helmet = require("helmet");
 
 app.use(helmet());
 app.use(cors({
-  origin: "https://eventiq-six.vercel.app",
+  origin: [
+    "https://eventiq-six.vercel.app",
+  "http://localhost:5173"
+],
   credentials: true
 }));
 app.use(express.json());
@@ -36,6 +40,7 @@ app.use(limiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Database Connection
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/eventora')
